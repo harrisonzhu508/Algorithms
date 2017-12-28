@@ -1,5 +1,5 @@
 ---
-title: "Pseudocode of Algorithms"
+title: "Pseudocodes of Algorithms"
 output: html_notebook
 ---
 All pseudocodes that appeared in the Algorithms course.
@@ -123,3 +123,247 @@ else mid = floor((low+high)/2)
 
 ```
 $\Theta(n\log{n})$. 
+
+Naive Matrix Multiplication:
+
+```{python}
+
+SQUARE-MAT-MULT(A,B,n)
+let C be a new n by n matrix
+for i = 1 to n
+  for j = 1 to n
+    c_{ij} = 0
+    for k = 1 to n
+      c_{ij} = c_{ij} + a_{ik}xb_{kj}
+      
+```
+Runtime:$\Theta(n^{3})$. Space: $\Theta(n^{2})$. 
+
+Recurrence matrix multiplication:
+```{python}
+REC-MAT(A,B,n)
+let C be a new matrix
+if n == 1
+  c_{11} = a_{11}xb_{11}
+else partition A,B and C into n/2 x n/2 submatrices
+  C_{11} = REC-MAT-MULT(A_{11},B_{11},n/2) + REC-MAT-MULT(A_{12}, B_{21}, n/2)
+  C_{12} = REC-MAT-MULT(A_{11},B_{12},n/2) + REC-MAT-MULT(A_{12}, B_{22}, n/2)
+  C_{21} = REC-MAT-MULT(A_{21},B_{11},n/2) + REC-MAT-MULT(A_{22}, B_{21}, n/2)
+  C_{22} = REC-MAT-MULT(A_{21},B_{12},n/2) + REC-MAT-MULT(A_{22}, B_{22}, n/2)
+return C
+
+```
+
+
+Exponentiation:
+```{python}
+POWER(a,n)
+if n = 0
+  return 1
+if n = 1
+  return a
+q = floor(n/4) + 1
+return POWER(a,q)xPOWER(a,n-q)
+```
+$O(n)$
+
+
+FAST Exponentiation:
+```{python}
+FASTPOWER(a,n)
+if n = 0
+  return 1
+tmp = FASTPOWER(a,floor(n/2))
+if n  is even
+  return tmp x tmp
+else (n is odd)
+  return tmp x tmp x a
+```
+$\Theta(\log{n})$. 
+
+Alternative maximum subarray by solving the dynamic programming problem:
+$$
+\max{Sub(A[1...n])} = \max{(maxSub(A[1...n-1]),\max_{i=1}^{n}{sum(A[i...n])})}.
+$$
+
+```{python}
+DynSub(A)
+max_so_far = -\infty
+max_ending_here = -1
+for i in 1 to n:
+  if max_ending_here <0
+    max_ending_here = A[i]
+  else
+    max_ending_here = max_ending_here + A[i]
+  endif
+  max_so_far = max(max_ending_here, max_so_far)
+  endfor
+  return max_so_far
+
+```
+
+Karatsuba's multiplication algorithms: Given $x,y$ numbers in base $b$. We have
+$$
+x = x_{H}\cdot b^{n/2} + x_{L}\\
+y = y_{H}\cdot b^{n/2} + y_{L}.
+$$
+Then it suffices to compute $x_{H}\cdot y_{H}, x_{L}\cdot y_{L}, (x_{H}+ x_{L})(y_{H}+y_{L})$, giving
+$$
+T(n) = 3T(n/2) + \Theta(n).
+$$
+```{python}
+KARATSUBA(x,y)
+```
+
+
+#3 Heaps#
+
+Max-Heapify:
+```{python}
+MAX-HEAPIFY(A,i,n)
+  l = LEFT(i)
+  r = RIGHT(i)
+  if l <= n and A[l] > A[i]
+    largest = l
+  else largest = i
+  if r<= n and A[r] > A[largest]
+    largest = r
+  if largest \neq i
+    exchange A[i] with A[largest]
+    MAX-HEAPIFY(A,largest,n)
+    
+
+```
+Runtime: $O(\log{n})$. Space: $\Theta(n)$. 
+
+Building a max heap:
+```{python}
+BUILD-MAX-HEAP(A,n)
+for i = floor(n/2) downto 1
+  MAX-HEAPIFY(A,i,n)
+```
+Primitively, this takes $O(n\log{n})$. However, a more careful analysis reveals $O(n)$. 
+
+Heapsort:
+```{python}
+HEAPSORT(A,n)
+BUILD-MAX-HEAP(A,n)
+for i = n downto 2
+  exchange A[1] with A[i]
+  MAX-HEAPIFY(A,1,i-1)
+
+```
+Runtime: $O(n\log{n})$. Buildmaxheap and then maxheapify $n-1$ times. 
+
+Extracting Maximum Element
+```{python}
+HEAP-EXTRACT-MAX(A,n)
+if n<1
+  error "heal underflow"
+max = A[1]
+A[1] = A[n]
+n = n-1
+MAX-HEAPIFY(A,1,n)
+return max
+```
+$O(\log{n})$.
+
+Increasing key value
+```{python}
+HEAP-INCREASE-KEY(A,i,key)
+if key < A[i]
+  error "new key is smaller than current key"
+A[i] = key
+while i > 1 and A[PARENT(i)]<A[i]
+  exchange A[i] with A[PARENT(i)]
+  i = PARENT(i)
+```
+$O(\log{n})$.
+
+Inserting into the heap
+```{python}
+MAX-HEAP-INSERT(A,key,n)
+n = n+1
+A[n] = -\infty
+HEAP-INCREASE-KEY(A,n,key)
+
+```
+$O(\log{n})$. 
+
+#4 Pointers/lists/Stacks#
+
+Stack operations:
+
+```{python}
+#check if stack is empty
+STACK-EMPTY(S)
+if S.top = 0
+  return TRUE
+else return FALSE
+
+#push
+PUSH(S,x)
+S.top <- S.top + 1
+S[S.top] <- x
+
+#pop
+POP(S)
+if STACK-EMPTY(S)
+  error "underflow"
+else 
+  S.top <- S.top -1
+  return S[S.top + 1]
+```
+
+Queue Operations:
+```{python}
+#enqueue
+ENQUEUE(Q,x)
+Q[Q.tail] = x
+if Q.tail = Q.length
+  Q.tail <- 1
+else Q.tail <- Q.tail + 1
+
+#dequeue
+DEQUEUE(Q)
+x = Q[Q.head]
+if Q.head = Q.length
+  Q.head <- 1
+else Q.head <- Q.head + 1
+return x
+
+```
+
+Linked List Operations:
+```{python}
+#list search
+LIST-SEARCH(L,k)
+x <- L.head
+while x\neq nil and x.key \neq k
+  x <- x.next
+return x
+
+#insertion
+LIST-INSERT(L,x)
+x.next <- L.head
+if L.head \neq nil
+  L.head.prev <- x
+L.head <- x
+x.prev = NIL
+
+#list delete
+LIST-DELETE(L,x)
+if x.prev \neq nil
+  x.prev.next <- x.next
+else L.head <- x.next
+if x.next \neq nil
+  x.next.prev <- x.prev
+  
+
+```
+Although if we introduce sentinels then it would further simply these algorithms. `LIST-SEARCH` runs in $O(n)$ time and the rest are in constant time. 
+
+
+
+
+
