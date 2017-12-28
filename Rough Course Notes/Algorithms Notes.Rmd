@@ -1,0 +1,549 @@
+---
+title: "Algorithms"
+output: html_notebook
+---
+#Section II#
+#Graphs#
+##6.0 Definitions##
+##Traversing+Searching, BFS, DFS, Parenthesis Theorem, White Path Theorem##
+
+DFS implemented with component label:
+
+```{python}
+def DFS_Visit(u,label):
+  color[u] = GRAY
+  time = time + 1
+  d[u] = time
+  cc[u] = label
+  for each v in Adj[u]:
+    if color[v] = WHITE:
+      then DFS-Visit(v,label)
+  color[u] = BLACK
+  time = time + 1
+  f[u] = time
+```
+
+```{python}
+def DFS(V,E):
+  for each u in V:
+    do color[u] = WHITE, cc[u] = 0
+  time = 0
+  label = 0
+  for each u in V:
+    if color[u] = WHITE
+       label = label + 1
+       DFS-Visit(u,label)
+```
+
+#(11):Shortest Path#
+
+##Bellman-Ford Algorithm##
+
+
+
+#Dijkstra's Algorithm#
+
+Loop Invariance:
+
+**At the start of each iteration, we have for all $v \in S$ that the distance $v.d$ from $s$ to $v$ is equal to the shortest path from $s$ to $v$**
+
+*PROOF*. 
+
+By induction:
+
+Base case: Trivial.
+
+
+Inductive step: Let $v$ be a point attained in 1 iteration. Then we prove by contradiction. **cf. book + Kapralov notes.**$\square$
+                      
+#(12)Probabilistic Analysis#
+##Motivation##
+- The worst case does not usually happen
+  - Average case analysis
+  - Amortised analysis
+
+- Randomisation helps avoid worst-case and attacks by evil users
+  - Choosing the pivot in quick-sort at random
+
+- Randomisation necessary in cryptopgraphy
+
+- Randomness extraction
+- Pseudorandom generators
+
+##The Hiring Problem
+
+*Assumption*: Any one of the first $i$ candidates is equally likely to be best-equalified so far.
+
+Hire one new basketball player(the taller the better)
+
+*Problem*: $n$ candidates they call for interview?
+
+*Question*: How many players did we (temporarily) hire?
+
+We may be hiring all of the in the worst case! However, the worst case is unlickely to happen $\Rightarrow$ Probabilistic Analysis.
+
+###Examples###
+
+Suppose that the probability of hiring 6 players is uniform, then $E(players hired) = \sum xPr(X=x) = $
+
+###Indicator Random Variables###
+
+**Definition**(Indicator r.v.)
+
+Given a sample space $\mathcal{S}$ and an event $A$ we define the **indicator random variables** as $I\{ A\}$.
+
+**Lemma** For an event $A$, let $X_{A} = I_{A}$, then $E(X_{A}) = Pr(A)$.
+
+###Example(Coin flip)###
+
+*Determine the expected number of heads when we flip $n$ coins*
+
+$E(X) = \sum E(X_{i})$ 
+
+Let $X$ be the random variable that equals the number of times we hire a player. Define $X_{i}$'s as $X_{i} = I_{\{ i \ \ hired \}}$. Then, 
+$$
+E(X) = \sum_{i=1}^{n} E(X_{i}) = \sum_{i=1}^{n}\frac{1}{i} = \log{n} + O(1)
+$$
+
+###Question###
+
+Given a function **RANDOM** that returns 1 with probability $p$ and 0 with probaiblity $1-p$. 
+
+- How do we use RANDOM for generating an unbiased bit?
+
+- Pick a pair $(a,b)$ of random numbers: a = RANDOM, b = RANDOM
+  - If $a\neq b$ return $a$
+  - Other pick new pair
+
+*Question* : What is the expected runtime?  $Pr(answer) = 2p(1-p)$.
+
+##Birthday Paradox##
+
+*Question*: How many students in a room do we need so that the probability that 2 of them have the same birthday is at least 50%?
+
+**Lemma(Birthday)**
+
+If $q>1.78\sqrt{|M|}$ then the probability that a function chosen uniformly at random $f:\{ 1,2,,,q\}\rightarrow M$ is injective is at most $1/2$(then we can use the pigeonhole principle to show that 2 people have the same birthday).
+
+*PROOF.*
+
+Let $m=|M|$. Then the probability that $f$ is injective is $p = \frac{m!}{q! m^{q}}$. Since $\exp{(-x)}>1-x$, have that
+$$
+p < \exp{(-0)}\cdot\cdot \exp{-((q-1)/m)} = \exp{(-q(q-1)/2m)}
+$$
+This is less than $1/2$ if $q>\frac{1+\sqrt{1+8\log{2}}}{2}~~1.78\sqrt{m}$ $\square$
+
+#Hash Functions and Tables#
+*Motivation*
+We would like to design Hash Functions, using the birthday lemma. 
+
+##Direct-Address Tables##
+
+- Allows simple implmentation of constant-time insertion, deletion and search
+- Every book has a unique number (ISBN)
+- Construct array/table $T$ with a position for each book -> pointers
+- Run time is 
+
+##Hash tables##
+
+- $\Theta(K)$
+- $O(1)$ operations average
+- An element with key $k$ is stored in slot $h(k)$
+- $h:U\rightarrow \{ 0,1,...,m-1\}$ hash function 
+
+*Question*: Design an injective mapping?
+
+###Desired Properties###
+
+- Efficient
+- Distributes keys uniformly
+- Deterministic $h(k)$ is always equal to $h(k)$  
+- **Simple uniform hashing**: 
+      $h$ hashes a new key equally likely to any of the $m$ slots independently of where any          other has hashed to. For every collection of keys $k_{1},...k_{n}$, $(h(k_{1}),..,h(k_{n}))$ uniformly distributed in $\{ 0,..,m-1 \}^{n}$ - coin flip.
+
+###Collisions###
+
+- 2 items with keys $k_{i}$ and $k_{j}$ collide
+- *Question*: How big table do we need to have so as to avoid collisions with high prob? **Birthday Lemma** 
+
+$m$ at least $\Omega(n^{2})$ to ensure no collisions with at least constant probability from $n < 1.78\sqrt{m}$.
+
+- **Chaining**: place all elements that hash to the same slot into the same linked list
+- Run: $O(1)$ on average
+- Space: $O(m+K)$
+
+- Search, insert and delete
+
+###Running time of search###
+
+*Assume Uniform hashing*
+
+Suppose that the length of the $j$-th hole is $n_{j}$. Then the expected $n_{j}$ is:
+
+$E(n_{j}) = \sum_{j=0}^{n} Pr(h(k)=j) = n/m = \alpha$
+
+**Theorem**(An unsuccessful search takes expected time $\Theta(1+\alpha))$.
+
+**PROOF.** Suppose we search hole $j$. Then the expected length is $\alpha$, and so the expected number of elements checked is $\alpha$ too. Calculating the hash function takes constant time, and hence we have $\Theta(1+\alpha)$.
+
+**Theorem**(A successful search takes expected time $\Theta(1+\alpha))$.
+
+**PROOF.**
+
+Suppose $x$ is the element that we have searched for. Then we simply need to calculate the expected number of elements added after $x$ was added into a hole. 
+
+- Let $x_{i}$ be the element inserted into $k_{i}:= h(x_{i})$.
+- Let $X_{ij}$ be the event that $h(k_{i}) = h(k_{j})$, and hence the same hole.
+- Each element has probability $1/n$ of being picked.
+- Simple uniform hashing $E(X_{ij}) = 1/m$.
+- Each time we add we validate it by +1. 
+
+$E(\frac{1}{n}\sum_{i=1}^{n}(1+\sum_{j=i+1}^{n}X_{ij})) = 1+\frac{\alpha}{2} - \frac{\alpha}{2n}$
+
+Expected: sum of probability that $i$ is searched for times the expected runtime of searching for $i$.
+
+
+$1/m$ the hash functions are the same. 
+
+###Examples of Hash Functions###
+
+- Big area of research
+- Depends on data distribution and other properties
+
+**Example 1**(Division Method)
+
+$h(k) = k \mod{m}$
+
+**Example 2**(Multiplicative method)
+
+$h(k) = \lfloor m\times fractional(kA) \rfloor$
+
+**Hash tables advantages:**
+
+- Practical method with fast insertion, deletion and search
+- Performance depends on choice of hash function
+- Respolve conflicts by for exmaple using chaining
+
+#(13)Quick Sort(with randomisation)#
+
+- Easy to implement, fast in practice and based on divide-and-conquer
+- Used for most sorting
+
+##Idea##
+
+- **Divide**: Partitition $A$ into 2 subarrays such that the first is $\leq A[q]$ and the second is $\geq A[q]$. 
+- **Conquer**: Sort 2 subarrays with recursive calls
+- **Combine**: No work needed to combine because **in place**.
+
+###Parititioning###
+
+*PARTITION* 
+
+Take the last element as the pivot. 
+
+**FIX**
+```{python}
+def PARTITION(A,p,r):
+    x = A[r-1]
+    i = p - 1
+    for j in xrange(p,r):
+        if A[j] <= x:
+            i = i + 1
+            key = A[j]
+            A[j] = A[i] #exchange A[i] with A[j]
+            A[i] = key
+    key2 = A[i+1]
+    A[i+1] = A[r-1] #exchange A[i+1] with A[r]
+    A[r-1] = key2
+    return i + 1
+
+```
+
+**Invariance**: 
+
+- All entries in $A[p...i]$ are $\leq$ pivot
+- All entries in $A[i+1...j-1]$ are $>$ pivot
+- $A[r]$ = pivot
+
+**Example** $A = [1,1,1,1,1,1]$ will give a very bad partition.
+
+
+###Quicksort Algorithm###
+```{python}
+def QUICKSORT(A,p,r):
+  if p < r:
+    q = PARTITION(A,p,r)
+    QUICKSORT(A,p,q-1)
+    QUICKSORT(A,q+1,r)
+
+```
+*Problem* If $A$ was already sorted then QUICKSORT would run in $\Theta(n^{2})$ time :(
+
+**Best case**: Occurs when the subarrays are completely balanced every time. We get
+$$ T(n) = 2T(n/2) + \Theta(n) $$
+**If PARTITION alwyas produces a 9-1 split**
+$$
+T(n) = T(9n/10) + T(n/10) + \Theta(n) = \Theta(n\log{n})
+$$
+
+###Randomisation of Quicksort###
+
+**Options**
+
+- Randomly permute input array: Only small number of input sequences are problematic.
+- Permute array: not that easy
+- Random Sampling: pick 1 element in random
+- Don't always use $A[r]$ as the pivot - randomly pick element from subarray that is sorted
+
+```{python}
+def RANDOMIZED_PARTITION(A,p,r):
+  i = RANDOM(p,r)
+  exchange A[r] with A[i]
+  return PARTITION(A,p,r)
+  
+def RANDOMIZED_QUICKSORT(A,p,r):
+  if p < r:
+    q = RANDOMIZED-PARTITION(A,p,r):
+    RANDOMIZED-QUICKSORT(A,p,q-1)
+    RANDOMIZED-QUICKSORT(A,q+1,r)
+```
+
+- Time this takes = number of calls to PARTITION + total number of comparisons.
+- Total amount of work of each call to PARTITION is constant + number of comparisons performed in `for` loop
+- Let $X$ be the total number of comparisons is all calls to PARTITION
+
+- Call $z_{1},...,z_{n}$ the ordered elements of $A$
+- Let $Z_{ij} := \{ z_{i},..,z_{j} \}$
+- $X_{ij} = I\{z_{i} \leftrightarrow z_{j} \}$.
+- $E(X) = \sum_{i=1}^{n}\sum_{j=i+1}^{n}E(X_{ij}) = \sum_{i=1}^{n}\sum_{j=i+1}^{n}Pr(z_{i}\leftrightarrow z_{j})$
+
+- When the pivot is between $i,j$, we never compare these 2 elements.($\color{red}{\text{Remember that the key point is that we select the pivot during the first iteration}}$ ).
+- When the pivot is outside these indices, these are encoded in the recursion but we don't compare them
+- Hence, we want the probabiltiy that $z_{i}$ or $z_{j}$ are pivots
+- $Pr(z_{i},z_{j}|pivot\in Z_{ij}) = 2/\xi(Z_{ij}) = \frac{2}{j-i+1}$.
+
+Hence, 
+
+$$
+E(X) = \sum_{i=1}^{n-1}\sum_{j=i+1}^{n} \frac{2}{j-i+1} = \sum_{i=1}^{n-1}\sum_{k=1}^{n-i} \frac{2}{k+1}<\sum_{i=1}^{n-1}\sum_{k=1}^{n} \frac{2}{k} = O(n\log{n})
+$$
+- **EXPECTED** runtime is $O(n\log{n})$
+
+##Lower bounds for sorting and Linear Time Sorting##
+- Every comparison based sorting algorithm can be seen as a decision tree
+- Input $A[1...n]$, values between $0$ and $k$.
+- Output $B[1...n]$ sorted
+
+###Counting Sort###
+```{python}
+def COUNTING_SORT(A,B,n,k):
+  let C[0..k] be a new array
+  for i = 0 to k:
+    C[i] = 0
+  for j = 1 to n:
+    C[A[j]] = C[A[j]] + 1
+  for i = 1 to k:
+    C[i = C[i] + C[i-1]
+  for j = n downto 1:
+    B[C[A[j]]] = A[j]
+    C[A[j]] = C[A[j]] -1
+```
+
+- Useful if range is small
+- Can't beat $O(n\log{n})$
+
+#(14)All-Pairs Shortest Paths#
+
+Given graph $G = (V,E)$, s\in V$ and edge weights $w:E\rightarrow\mathbb{R}$, find $\delta(s,v)=$shortest path weight $s\rightarrow v$ for all $v\in V$.(well-defined if no negative cycles). 
+
+Recall single-source shortest paths:
+
+- unweighted(w=1): BFS, $O(V+E)$
+- nonneg. edge weights: Dijkstra, $O(E + Vlog(V))$
+- general: Bellman-Ford, $O(VE)$
+- acyclic(DAG): Topological Sort + 1 pass Bellman-Ford, $O(V+E)$ 
+
+##Situation##
+
+Could do $|V|$*Algorithm depending on the different situations. We will see an $algorithm$ that gives $O(VE + V^{2}\log{V})$(cf. Dijkstra).
+
+###Dynamic Program 1##
+
+**Subproblem**: $d_{uv}^{(m)}=$ weight of shortest $u\rightarrow v$ path using $\leq m$ edges. We would like to get a recurrence in $m$. We could try:
+$$
+d_{uv}^{(m)} = \min_{x\in V}{ d_{ux}^{(m-1)} + w(x,v)}
+$$
+**Initiliation**
+$$
+d_{uv}^{(0)} =
+\left\{
+  \begin{array}{rcr}
+    &0 \ \ &\text{if}\ \  u=v \\
+   &\infty \ \  \ \  &otherwise   \\ 
+  \end{array}
+\right.
+$$
+How large should $m$ be?
+
+```{python}
+for m from 1 to V:
+  for u in V:
+    for v in V:
+      For x in  V:
+        if d_uv^m > d_ux^(m-1) + w_xv:
+          d_uv^m = d_ux^(m-1) + w_xv
+```
+
+- Runtime = $O(|V|^{2})$
+- This looks like matrix multiplication!
+
+##Matrix multiplication 2##
+
+Given $n\times n$ matrices $A,B$, compute $C = AB$:
+
+- $O(n^{3})$ via standard
+- $O(n^{log_{2}{7}}) = O(n^{2.807})$ via Strassen
+- Coppersmith-Winograd
+
+Define $\oplus:= min$, $\odot = +$ operations. Then our shortest paths becomes a matrix multiplicaiton problem:
+$$
+d_{uv}^{(m)} = \oplus_{i = 1}^{n}(d_{u,i}^{(m-1)}\odot w_{i,v})
+$$
+For our matrix multiplication 
+$$
+c_{uv} = \min_{k=1...n}{a_{uk} + b_{kv}}
+$$
+turns into:
+$$
+c_{uv}^{(m)} = \oplus_{i = 1}^{n}(a_{u,i}^{(m-1)}\odot b_{i,v})
+$$
+Define $D^{(m)} := (d_{ij}^{(m)})$, $W = (w_{ij})$, $V = \{1,2,..,n \}$ then
+$$
+D^{(m)} = D^{(m-1)}\odot W = W^{circle(m)}
+$$
+definition?
+
+**Transitive Closure**
+
+$$
+t_{ij} = \left\{
+  \begin{array}{rcr}
+    &1 \ \ &\text{there is a path from}\ \  i \rightarrow j \\
+    &0 \ \  \ \  &otherwise   \\ 
+  \end{array}
+\right.
+$$
+
+- See if $\delta(u,v)<\infty$. 
+- ({0, 1}, OR, AND) is not a ring, can still use fast matrix multiplication $O(n^{2.376}\log{(n)})$
+
+##Floyd-Warshall Algorithm3##
+
+- Faster dynamic program.
+- **Subproblem**: $c_{uv}^{(k)} =$weight of shortest path $u\rightarrow v$ whose intermediate vertices are in $\{1,2,..,k \}$
+- $c_{uv}^{(0)} = w_{uv}$. 
+- Express $c_{uv}^{(k)}$ in terms of $c_{ab}^{(k-1)}$, $a,b,\in V$.
+$$
+c_{uv}^{(k)} = \min{(c_{uv}^{(k-1)}, c_{uk}^{(k-1)} + c_{kv}^{(k-1)} )}
+$$
+- Initialisation: $c_{uv}^{(0)} = w_{uv}$.
+- Time: $O(V^{3})$, 2 choices, so $O(V^{3})$. 
+- Graph is sparse if $|E|<<|V|^{2}$.
+```{python}
+For k from 1 to n: 
+  For u in V :
+    For v in V :
+      if cuv > cuk + ckv :
+        cuv =cuk +ckv
+```
+
+##Johnson's Algorithm4##
+
+- Better than Floyd-Warshall
+- $O(VE + V^{2}\log{(V)})$
+
+1 - We want to modify the weights such that it is non-negative. Find $h:V\rightarrow\mathbb{R}$ such that 
+$$
+w_{h}(u,v) = w(u,v) + h(u) - h(v)\geq 0
+$$
+for all $u,v\in V$ or determine that a negative cycle exists.
+
+2 - Run Dijkstra on $(V,E,w_{h})$ from every source $s\in V$, getting $\delta_{h}(u,v)$ for all $u,v\in V$.
+
+3 - Claim $\delta(u,v) = \delta_{h}(u,v) - h(u) + h(v)$ for all $u,v\in V$. 
+
+**PROOF.** Look at any $u\rightarrow v$ path $p$ in $G$. Suppose:
+$$
+p = u = v_{0}\rightarrow v_{1}\rightarrow...\rightarrow v_{k} = v$
+$$
+$w_{h}(p) = \sum_{i=1}^{k}w_{h}(v_{i-1,v_{i}}) = w(p) + h_{0} - h_{k}$ by using the definition of $w_{h}$. Recall that 
+$$
+\delta(u,v) = \min_{\text{paths} p}w_{h}(p) = \min_{\text{paths} p}w(p) + h_{0} - h_{k}
+$$
+$\square$. 
+
+- Can just solve the system of difference constraints $h(v) - h(u)\leq w(u,v)$ for all $u,v\in V$. 
+- Bellman-Ford relaxation step. cf. notes 
+- If $G$ has no negative weight cycles then can solve system:
+
+**PROOF.**
+
+Add vertex $s$ to $G$, connect by 0 weight edges to every other node. Let $h(v) = \delta(s,v)$. 
+$$
+h(v) - h(u) = \delta(s,v) - \delta(s,u) \leq w(u,v),
+$$
+by the triangle inequality.             $\square$
+
+#(15)Fast Fourier Transform(FFT)#
+
+- Top 10 algorithm of the 20th century
+- Major tool in scientific copmuting and computer science
+- Applications: 
+    - Discrete Fourier Transform: image and video compression, signal processing, SETI@home, integer multiplicaiton, polynomial multiplication
+    
+To motivate the FFT, let's talk about polynomial multiplications first. 
+
+##Polynomial multiplication##
+
+Let a polynomials be $A(z) = a_{0} + a_{1}z +...+ a_{z}z^{d}$ and $B(z) = b_{0} + b_{1}z +...+ b_{z}z^{d}$. What is $A(z)\times B(z) = C(z) = \sum_{k=0}^{2d} c_{k}z^{k}$? 
+
+Well this is just given by: 
+$$
+c_{k} = \sum_{i=0}^{k}a_{i}b_{k-i} \quad \text{for all} \quad k = 0,1,..,2d.
+$$
+Recall that all cofficients $a_{i},b_{i}$ outside of $[0,d]$ are  0. $c$ is the **convolution** of $a$ and $b$ - $2d$ tuples. How many arithmetic operations do we need?
+
+- Naive: $\Theta(d^{2})$.
+- Divide and conquer(better): Karatsuba:$O(d^{lg3})$
+$$
+A(z) = a_{0}+...+ a_{d/2}z^{d/2} + a_{d/2+1}z^{d/2+1}+...+a_{d}z^{d}
+$$
+- via FFT $O(dlogd)$. 
+
+- Representation: Choose points $x_{0}...x_{N-1}$. Use polynomial interpolation: giving $d^{3}$ time. 
+- Operations on polynomials in coefficient and point/value form. 
+- Note that our sample points are currently arbitrary - let us choose these points carefully.
+
+Strategy:
+- Evaluate $A$ and $B$ at $N>2d$ points,
+- $C = AB$
+- polynomial interpolation to recover coefficients of $C$. 
+
+*Question*: Would need to evaluate $A$ and $B$ at $N$ points, each almost $O(1)$ cost. Naively this would give us $\Theta(N^{2})$ time.
+
+**Divide and Conquer**
+
+- Divide the polynomial $A$ into even and odd parts. Write
+$$
+A(z) = A_{even}(z^{2}) + z\cdot A_{odd}(z^{2}).
+$$
+- Divide: Split
+- Conquer: Evaluate at $A_{even}(z)$ and $A_{odd}(z)$ on $x_{0}^{2},..,x^{2}_{N-1}$. 
+- Let $A(x_{j}) = A_{even}(x_{j}^{2}) + x_{j}\cdot A_{even}(x_{j}^{2})$. We have:
+$$
+T(d)\leq 2T(d/2) + O(N).
+$$
+  
+  
+
+
