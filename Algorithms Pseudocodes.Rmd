@@ -1,9 +1,0 @@
----
-title: "Pseudocode of Algorithms"
-output: html_notebook
----
-All pseudocodes that appeared in the Algorithms course.
-
-
-
-#1.2#
