@@ -259,7 +259,7 @@ Extracting Maximum Element
 ```{python}
 HEAP-EXTRACT-MAX(A,n)
 if n<1
-  error "heal underflow"
+  error "heap underflow"
 max = A[1]
 A[1] = A[n]
 n = n-1
@@ -289,6 +289,40 @@ HEAP-INCREASE-KEY(A,n,key)
 
 ```
 $O(\log{n})$. 
+
+Algorithm to sort $k$ sorted arrays into 1 single array
+```{python}
+SORT(A,L,n,k)
+Let C be the solution 
+for i = 1 to k
+  B[i].element = A[L[i]]
+  B[i].array = i
+  B[i].index = L[i]
+BUILD-MIN-HEAP(B,1,k)
+for i = 1 to n
+  C[i] = B[1]
+  if B[1].index + 1 == L[B[1].array + 1] then
+    B[1].element = \infty
+  else
+    B[1].index = B[1].index + 1
+    B[1].element = A[B[1].index]
+  MIN-HEAPIFY(B,1,k)
+```
+$O(n\log{k})$
+
+Algorithm to extract the $k$ largest elements of a max heap.
+```{python}
+LARGESTK(A,B)
+Let H be an empty heap
+B[k] = A[1]
+insert A[2] and A[3] to H
+for i = k-1 down to 1
+  tmp = EXTRACT-MAX(H)
+  B[i] = tmp
+  Insert tmp's children in A to H
+
+```
+$O(k\log{k})$. 
 
 #4 Pointers/lists/Stacks#
 
@@ -364,6 +398,112 @@ if x.next \neq nil
 Although if we introduce sentinels then it would further simply these algorithms. `LIST-SEARCH` runs in $O(n)$ time and the rest are in constant time. 
 
 
+#5 Dynamic Programming#
+
+Top-down with memoisation for Fibonacci:
+```{python}
+MEMOISED-FIB(n)
+Let r = [0...n] be a new array
+for i = 0 to n
+  r[i] <- -\infty
+return MEMOISED-FIB-AUX(n,r)
+
+MEMOISED-FIB-AUX(n,r)
+if r[n] \geq 0
+  return r[n]
+if n = 0 or n = 1
+  ans <- 1
+else
+  ans <- MEMOISED-FUB-AUX(n-1,r) + MEMOISED-FIB-AUX(n-2,r)
+r[n] <- ans
+return r[n]
+```
+$O(n^{2})$. The key here is that $r$ gets updated along the way so it saves us calculation times.
+
+Bottom-down for Fibonacci
+```{python}
+BOTTOM-UP(n)
+Let r[0...n] be an empty arrow
+r[0] = 1
+r[1] = 1
+for i = 1 to n
+  r[i] = r[i-1] + r[i-2]
+return r[n]
+```
 
 
+When we are calculating an iterative sum $f(n) = \sum_{i=1}^{n-1}f(i)$ with $f(0) = 1$:
 
+```{python}
+Calc(n)
+let r[0...n] be a new array
+r[0] = 1
+for  i = 0 to n
+  r[i] = -1
+return CalcMem(n,r)
+
+CalcMem(n,r)
+if r[n]\geq 0 then
+  return r[n]
+s = 0
+for i = 0 to n-1
+  s = s + CalcMem(i,r)
+
+r[n] = s
+return r[n]
+```
+$O(n^{2})$.
+
+We can extend this to rod-cutting:
+```{python}
+CutRod(p,n)
+let r[0...n] be a new array
+for  i = 0 to n
+  r[i] = -1
+return CutRodMem(p,n,r)
+
+CutRodMem(p,n,r)
+if r[n]\geq 0 then
+  return r[n]
+if n==0
+  q = 0
+else q = -\infty
+  for  i = 1 to n
+    q = max(q,p[i] + CutRodMem(p,n-i,r))
+r[n] = q
+return q
+```
+
+or likewise bottom-up
+```{python}
+BOTTOMUPCUT(p,n)
+let r[0...n] be empty
+r[0] = 0
+for j = 1 to n
+  q = -\infty
+  for i = 1 to j
+    q = max(q, p[i] + r[j-i])
+  r[j] = q
+return r[n]
+
+```
+Both take $O(n^{2})$ time. 
+
+We can also include the cut indices:
+
+```{python}
+
+EXTENDED_BOTTOMUPCUT(p,n)
+let r[0...n] and s[0...n] be empty
+r[0] = 0
+for j = 1 to n
+  q = -\infty
+  for i = 1 to j
+    if q < p[i] + r[j-i]
+      q = p[i] + r[j-i]
+      s[j] = i
+  r[j] = q
+return r and s #they contain the optimal prices and cuts
+
+```
+Note that for s, the numbers give the optimal cut position for each $i$. Hence we just need to work down the list from $s[i]$. 
