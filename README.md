@@ -1,4 +1,5 @@
 Algorithms from the course "Algorithms" at EPFL
+All material taken from the course lectured by Professor Michael Kapralov
 
 Contents:
 
