@@ -1,0 +1,19 @@
+Chapters wrt PS,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,Total
+Measure and Integration,"S1,S2,S3,S4,S5,S8","S4,S5","S6,S7,S8,S9","S9,S10,S11,S12",Stein + pp,,,,,,,,,,
+Questions(non-disjoint),20,4,14,14,,,,,,,,,,,52
+Linear Models,"S1,S2","S3,S4,S5","S6,S7",S8,"S9,S10,S11,S12,S13",S13,S14,,,,,,,,
+Questions(non-disjoint),8,9,10,2,11,4,,,,,,,,,44
+Algorithms,"S1,S2","S2,S3",S4,"S4,S5","S5,S6","S6,S8",hmm,"S8,S9",S10,S10,"S10,S11",S11,S12,S13,
+Questions(non-disjoint),8,12,5,12,8,11,hmm,10,1,5,5,4,7,7,95
+PDE,,,,,,,,,,,,,,,
+Questions(non-disjoint),,,,,,,,,,,,,,,
+Functional Analysis,"S1,S2",S3,"S4,S5,S6","S7,S8,S9","S10,S11","S12,S13,S14",,,,,,,,,
+Questions(non-disjoint),10,8,13,13,9,13,,,,,,,,,66
+Numerical Analysis,"S1,S2,S3,S4","S4,S5,S6,S7","S8,S9,S10S11,S12",,,,,,,,,,,,
+Questions(non-disjoint),11,10,8,,,,,,,,,,,,29
+Matlab:,3,4,4,,,,,,,,,,,,11
+,,,,,,,,,,,,,,,
+Disection,,,,,,,,,,,,,,,
+Familiar,,,,,,,,,,,,,,,
+Done,,,,,,,,,,,,,,,
+Check over Holiday,,,,,,,,,,,,,,,
